@@ -108,7 +108,7 @@ impl Build {
             // apparently but the whole point of this script is to produce a
             // "portable" implementation of OpenSSL, so shouldn't be any harm in
             // turning this off.
-            .arg("no-engine")
+            //.arg("no-engine")
 
             // MUSL doesn't implement some of the libc functions that the async
             // stuff depends on, and we don't bind to any of that in any case.
@@ -125,6 +125,13 @@ impl Build {
             // On MSVC we need nasm.exe to compile the assembly files, but let's
             // just pessimistically assume for now that's not available.
             configure.arg("no-asm");
+            
+            if target.contains("uwp") {
+                configure.arg("no-uplink");
+                configure.arg("no-tests");
+                configure.arg("no-external-tests");
+                configure.arg("no-buildtest-c++");
+            }
 
             let features = env::var("CARGO_CFG_TARGET_FEATURE")
                       .unwrap_or(String::new());
